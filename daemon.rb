@@ -1,14 +1,15 @@
 require 'cardano_wallet'
-@cw = CardanoWallet.new({port: 8093})
+
+@cw = CardanoWallet.new({port: ARGV[0].to_i})
 
 def store_treasury(epoch)
   puts "Going into epoch #{epoch}..."
   puts "Next epoch will be: #{epoch + 1}"
-  treasury = `cardano-cli shelley query ledger-state --testnet-magic 42 | jq .esAccountState._treasury`
+  treasury = `cardano-cli shelley query ledger-state --mainnet | jq .esAccountState`
   puts "Treasury: #{treasury}"
   open('treasury.out', 'a') { |f|
     f.puts "Epoch: #{epoch}"
-    f.puts "Treasury: #{treasury}"
+    f.puts "esAccountState: #{treasury}"
     f.puts "---"
   }
 end
